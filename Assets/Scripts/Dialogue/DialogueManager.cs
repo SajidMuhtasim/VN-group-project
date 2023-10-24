@@ -12,6 +12,7 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private GameObject choicePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
 
+    [SerializeField] AudioClip audioClip;
     private static DialogueManager instance;
     private TextAsset textAsset;
     private Story currentStory;
@@ -59,6 +60,7 @@ public class DialogueManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ContinueStory();
+            AudioManager.instance.PlaySFX(audioClip);
         }
     }
 
@@ -199,7 +201,7 @@ public class DialogueManager : MonoBehaviour
         //UpdateUI();
         ExitChoiceMode();
         DestroyUI();
-
+        AudioManager.instance.PlaySFX(audioClip);
 
         //        Debug.Log(currentStory.ChooseChoiceIndex(choice));
         ContinueStory();
