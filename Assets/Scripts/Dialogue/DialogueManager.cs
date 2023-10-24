@@ -18,6 +18,7 @@ public class DialogueManager : MonoBehaviour
     private bool dialogueIsPlaying;
 
     bool isChoosing;
+    public VerticalLayoutGroup layoutContainer;
     public Button buttonprefab;
 
 
@@ -42,6 +43,7 @@ public class DialogueManager : MonoBehaviour
 
     private void Start()
     {
+        DestroyUI();
         
         // You can add initialization code here if needed
 
@@ -88,19 +90,21 @@ public class DialogueManager : MonoBehaviour
         if (currentStory == null)
             return;
 
-        if (currentStory.canContinue && isChoosing == false)
+        if (currentStory.canContinue)
         {
 
             dialogueText.text = currentStory.Continue();
         }
-        else if (!currentStory.canContinue && isChoosing == false) 
+        else if (currentStory.currentChoices.Count > 0) 
         {
             UpdateUI();
         }
-        else 
+        
+        else
         {
             ExitDialogueMode();
         }
+        
     }
 
     void EnterChoiceMode()
@@ -116,27 +120,15 @@ public class DialogueManager : MonoBehaviour
         EnterChoiceMode();
         //button maker factory
 
-        List<Choice> _choice = currentStory.currentChoices;
+        List<Choice> _storychoice = currentStory.currentChoices;
 
-        /*  for (int i = 0; i < _choice.Count; i++)
-          {
-              Button choiceButton = Instantiate(buttonprefab, choicePanel.transform) as Button;
-              TextMeshProUGUI choiceText = buttonprefab.GetComponentInChildren<TextMeshProUGUI>();
-              choiceText.text = _choice[i].text;
-              Debug.Log(currentStory.currentChoices[_choice[i].index]);
-
-              choiceButton.onClick.AddListener(delegate {
-                  ChoiceHandler(_choice[i]);
-
-              });
-          }*/
-
-
-        foreach (Choice choice in currentStory.currentChoices)
+        int index = 0;
+       /* foreach (Choice choice in _storychoice)
         {
             Button choiceButton = Instantiate(buttonprefab, choicePanel.transform) as Button;
             TextMeshProUGUI choiceText = buttonprefab.GetComponentInChildren<TextMeshProUGUI>();
             choiceText.text = choice.text;
+
             Debug.Log(currentStory.currentChoices[choice.index].text);
 
             choiceButton.onClick.AddListener(delegate
@@ -144,21 +136,53 @@ public class DialogueManager : MonoBehaviour
                 ChoiceHandler(choice);
 
             });
+            index++;
+            Debug.Log(choiceText.text + index);
+        }*/
+
+        for (int i = 0; i < currentStory.currentChoices.Count; i++)
+        {
+            Choice choice = currentStory.currentChoices[i];
+            Debug.Log(currentStory.currentChoices[i]);
+            Button button = CreateButtonChoice(choice.text);
+
+            button.onClick.AddListener(delegate
+            {
+                ChoiceHandler(choice);
+
+            });
         }
-
-        /*        for (int i = 0; i < currentStory.currentChoices.Count; i++)
-                {
-
-                }*/
 
         //ExitDialogueMode();
     }
+
+
+    Button CreateButtonChoice(string text)
+    {
+
+        Button choiceButton = Instantiate(buttonprefab);
+        
+        choiceButton.transform.SetParent(layoutContainer.transform, false);
+
+        var buttonText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
+        
+        buttonText.text = text;
+
+        return choiceButton;
+    }
+
+
+
     void DestroyUI() 
     {
-        for (int i = 0; i < choicePanel.transform.childCount ; i++) 
+        if (layoutContainer != null)
         {
-            Destroy(choicePanel.transform.GetChild(i).gameObject);
+            foreach (var button in layoutContainer.GetComponentsInChildren<Button>())
+            {
+                Destroy(button.gameObject);
+            }
         }
+
     }
 
     void ExitChoiceMode() 
@@ -174,6 +198,7 @@ public class DialogueManager : MonoBehaviour
         currentStory.ChooseChoiceIndex(a.index);
         //UpdateUI();
         ExitChoiceMode();
+        DestroyUI();
 
 
         //        Debug.Log(currentStory.ChooseChoiceIndex(choice));
