@@ -1,3 +1,5 @@
+->Start
+
 === Start ===
 You wake up in a room with no windows. It's quiet, and the only source of light is a flickering fluorescent bulb overhead.
 
@@ -6,9 +8,12 @@ You wake up in a room with no windows. It's quiet, and the only source of light 
 === Next ===
 You can't remember how you got here. The room feels cold and sterile. A metal door stands in front of you, with a keypad.
 
-1. Try to open the door.
-2. Look around the room.
-3. Knock on the door.
+*1. Try to open the door.
+    ->TryToOpen
+*2. Look around the room.
+    ->LookAround
+*3. Knock on the door.
+    ->KnockOnDoor
 
 -> END
 
@@ -23,7 +28,7 @@ You search the room but find nothing of interest. The walls are bare, and the fl
 1. Try to open the door.
 2. Knock on the door.
 
--> END
+->END
 
 === KnockOnDoor ===
 You knock on the door, but there's no response. It's as if you're completely alone.
